@@ -4,7 +4,7 @@ module.exports = {
   //缩进
   tabWidth: 2,
   //结尾不用分号
-  semi: false,
+  semi: true,
   //使用单引号
   singleQuote: false,
   //在JSX中使用单引号，而不是双引号

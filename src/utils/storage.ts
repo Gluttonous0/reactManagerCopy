@@ -10,7 +10,7 @@ export default {
     const value = localStorage.getItem(key)
     if (!value) return
     try {
-      return JSON.stringify(value)
+      return JSON.parse(value)
     } catch {
       return value
     }

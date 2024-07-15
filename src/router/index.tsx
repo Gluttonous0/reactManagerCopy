@@ -1,8 +1,12 @@
+/**
+ * 路由目录
+ */
 import Erorr from "@/views/403"
 import Login from "@/views/login/Login"
 import Welcome from "@/views/Welcome"
 import { createBrowserRouter, Navigate } from "react-router-dom"
 import NotFound from "../views/404"
+import Layout from "@/layout"
 
 export const router = [
   {
@@ -10,13 +14,21 @@ export const router = [
     element: <Navigate to='/login' />
   },
   {
+    id: 'layout',
+    element: <Layout />,
+    // loader: AuthLoader,
+    children:[
+      {
+        path: "/welcome",
+        element: <Welcome />
+      },
+    ]
+  },
+  {
     path: "/login",
     element: <Login />
   },
-  {
-    path: "/welcome",
-    element: <Welcome />
-  },
+
   {
     path: "/403",
     element: <Erorr />
