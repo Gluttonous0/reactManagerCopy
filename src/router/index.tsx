@@ -1,12 +1,13 @@
 /**
  * 路由目录
  */
-import Erorr from "@/views/403"
-import Login from "@/views/login/Login"
-import Welcome from "@/views/Welcome"
-import { createBrowserRouter, Navigate } from "react-router-dom"
-import NotFound from "../views/404"
-import Layout from "@/layout"
+import Erorr from "@/views/403";
+import Login from "@/views/login/Login";
+import Welcome from "@/views/Welcome";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import NotFound from "../views/404";
+import Layout from "@/layout";
+import Dashboard from "@/views/dashboard";
 
 export const router = [
   {
@@ -14,14 +15,18 @@ export const router = [
     element: <Navigate to='/login' />
   },
   {
-    id: 'layout',
+    id: "layout",
     element: <Layout />,
     // loader: AuthLoader,
-    children:[
+    children: [
       {
         path: "/welcome",
         element: <Welcome />
       },
+      {
+        path: "/dashboard",
+        element: <Dashboard />
+      }
     ]
   },
   {
@@ -41,6 +46,6 @@ export const router = [
     path: "/404",
     element: <NotFound />
   }
-]
+];
 
-export default createBrowserRouter(router)
+export default createBrowserRouter(router);
