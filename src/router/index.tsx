@@ -3,9 +3,9 @@
  */
 import Erorr from "@/views/403";
 import Login from "@/views/login/Login";
-import Welcome from "@/views/Welcome";
+import Welcome from "@/views/welcome/Welcome";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import NotFound from "../views/404";
+import NotFound from "@/views/404";
 import Layout from "@/layout";
 import Dashboard from "@/views/dashboard";
 

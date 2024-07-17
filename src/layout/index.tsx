@@ -7,14 +7,12 @@ import { Outlet } from "react-router-dom";
 import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import SideMenu from "@/components/Menu";
+import styles from "./index.module.less";
+import TabFC from "@/components/TabFC";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const App: React.FC = () => {
-  const {
-    token: { colorBgContainer, borderRadiusLG }
-  } = theme.useToken();
-
   return (
     <Layout>
       <Sider>
@@ -22,20 +20,13 @@ const App: React.FC = () => {
       </Sider>
       <Layout style={{ width: "calc(100vw - 200px)" }}>
         <NavHeader />
-        <Content style={{ margin: "24px 16px 0" }}>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG
-            }}
-          >
-            content
+        <TabFC />
+        <Content className={styles.content}>
+          <div className={styles.wrapper}>
+            <Outlet></Outlet>
           </div>
-          <Outlet></Outlet>
+          <NavFooter />
         </Content>
-        <NavFooter />
       </Layout>
     </Layout>
   );

@@ -1,26 +1,29 @@
 /**
  * 登录页面
  */
-import api from "@/api/api"
-import { Login as LoginFC } from "@/types/api"
-import { Button, Form, Input } from "antd"
-import styles from "./index.module.less"
-import { message } from "@/utils/AntdGlobal"
-import storage from "@/utils/storage"
-import { useNavigate } from "react-router-dom"
+import api from "@/api/api";
+import { Login as LoginFC } from "@/types/api";
+import { Button, Form, Input } from "antd";
+import styles from "./index.module.less";
+import { message } from "@/utils/AntdGlobal";
+import storage from "@/utils/storage";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const onFinish = async (values: LoginFC.Params) => {
-    const base64 = btoa(values.userPwd)
-    console.log(base64);
-    const data = await api.login({...values,userPwd:base64})
-    message.success("登录成功")
-    storage.set('token',data)    
-    setTimeout(()=>{
-      navigate('/welcome')
-    },1000)
-  }
+    try {
+      const base64 = btoa(values.userPwd);
+      const data = await api.login({ ...values, userPwd: base64 });
+      message.success("登录成功");
+      storage.set("token", data);
+      setTimeout(() => {
+        navigate("/welcome");
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={styles.login}>
@@ -41,5 +44,5 @@ export default function Login() {
         </Form>
       </div>
     </div>
-  )
+  );
 }
