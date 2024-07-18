@@ -1,7 +1,7 @@
 /**
  * 登录页面
  */
-import api from "@/api/api";
+import api from "@/api/userApi";
 import { Login as LoginFC } from "@/types/api";
 import { Button, Form, Input } from "antd";
 import styles from "./index.module.less";

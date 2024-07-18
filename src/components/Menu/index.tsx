@@ -1,11 +1,10 @@
 /**
  * 侧边栏
  */
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.less";
 import { Menu } from "antd";
-import { UploadOutlined, UserOutlined, DesktopOutlined } from "@ant-design/icons";
+import { DesktopOutlined } from "@ant-design/icons";
 
 // const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map((icon, index) => ({
 //   key: String(index + 1),

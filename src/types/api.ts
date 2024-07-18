@@ -52,6 +52,7 @@ export namespace User {
   }
   // 用户对象
   export interface UserItem extends CreateParams {
+    id: string;
     userId: number;
     stateName?: string;
     deptName?: string;

@@ -7,24 +7,41 @@ import { Dropdown, Switch, Space } from "antd";
 import BreadCrumb from "./Breadcrumb";
 import type { MenuProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import useBearStore from "@/store";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import api from "@/api/userApi";
 
 export default function NavHeader() {
+  const userInfo = useBearStore(state => state.userInfo);
+  const updateUserInfo = useBearStore(state => state.updateUserInfo); //zustand临时储存
+
+  //获取用户信息
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
+  //获取用户信息接口
+  const getUserInfo = async () => {
+    const data = await api.getUserInfo();
+    updateUserInfo(data);
+  };
+  const navigate = useNavigate();
   const items: MenuProps["items"] = [
     {
-      label: "1st menu item",
+      label: `邮箱:${userInfo.userEmail}`,
       key: "1"
     },
     {
-      label: "2nd menu item",
+      label: "退出",
       key: "2"
-    },
-    {
-      label: "3rd menu item",
-      key: "3"
     }
   ];
   const onClick = (e: any) => {
-    console.log(e);
+    if (e.key === "1") return;
+    if (e.key === "2") {
+      navigate("/login");
+    }
   };
   const onChange = (e: any) => {};
   return (
@@ -37,7 +54,7 @@ export default function NavHeader() {
         <Dropdown menu={{ items, onClick }} trigger={["click"]}>
           <a onClick={e => e.preventDefault()}>
             <Space>
-              Hover me, Click menu item
+              {userInfo.userName}
               <DownOutlined />
             </Space>
           </a>
