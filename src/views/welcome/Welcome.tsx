@@ -2,7 +2,7 @@
  * 欢迎页面
  * @returns
  */
-import styles from "./index.module.less";
+import styles from "./index.module.less"
 
 export default function Welcome() {
   return (
@@ -14,5 +14,5 @@ export default function Welcome() {
       </div>
       <div className={styles.imgs}></div>
     </div>
-  );
+  )
 }

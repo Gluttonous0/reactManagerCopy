@@ -21,6 +21,15 @@ export interface Result<T = any> {
   msg: string
 }
 
+export interface ResultData<T = any> {
+  list: T[]
+  page: {
+    pageNum: number
+    pageSize?: number
+    total: number | 0
+  }
+}
+
 export namespace Login {
   export interface Params {
     userName: string
@@ -28,12 +37,29 @@ export namespace Login {
   }
 }
 
+//订单
 export namespace OrderType {
   export interface ReportData {
     cityNum: number
     driverCount: number
     orderCount: number
     totalMoney: number
+  }
+  export interface LineData {
+    label: string[]
+    order: number[]
+    money: number[]
+  }
+  export interface PieData {
+    value: number
+    name: string
+  }
+  export interface RadarData {
+    indicator: Array<{ name: string; max: number }>
+    data: {
+      name: string
+      value: number[]
+    }
   }
 }
 

@@ -1,18 +1,20 @@
 /**
  * 路由目录
  */
-import Erorr from "@/views/403";
-import Login from "@/views/login/Login";
-import Welcome from "@/views/welcome/Welcome";
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import NotFound from "@/views/404";
-import Layout from "@/layout";
-import Dashboard from "@/views/dashboard";
+import Erorr from "@/views/403"
+import Login from "@/views/login/Login"
+import Welcome from "@/views/welcome/Welcome"
+import { createBrowserRouter, Navigate } from "react-router-dom"
+import NotFound from "@/views/404"
+import Layout from "@/layout"
+import Dashboard from "@/views/dashboard"
+import UserList from "@/views/system/user/UserList"
 
 export const router = [
   {
     path: "/",
-    element: <Navigate to='/login' />
+    // element: <Navigate to='/login' />
+    element: <Navigate to='/welcome' />
   },
   {
     id: "layout",
@@ -26,6 +28,10 @@ export const router = [
       {
         path: "/dashboard",
         element: <Dashboard />
+      },
+      {
+        path: "/userList",
+        element: <UserList />
       }
     ]
   },
@@ -46,6 +52,6 @@ export const router = [
     path: "/404",
     element: <NotFound />
   }
-];
+]
 
-export default createBrowserRouter(router);
+export default createBrowserRouter(router)

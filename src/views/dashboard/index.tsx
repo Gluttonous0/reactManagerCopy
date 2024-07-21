@@ -1,5 +1,5 @@
 import useBearStore from "@/store"
-import { Avatar, Card, Col, Descriptions, Row } from "antd"
+import { Avatar, Button, Card, Descriptions } from "antd"
 import { UserOutlined } from "@ant-design/icons"
 import type { DescriptionsProps } from "antd"
 import styles from "./index.module.less"
@@ -7,15 +7,26 @@ import api from "@/api/userApi"
 import { useEffect, useState } from "react"
 import { OrderType } from "@/types/api"
 import { formatMoney, formatNum } from "@/utils"
-import * as echarts from "echarts"
+import { useCharts } from "@/hook/useCharts"
 
 export default function Dashboard() {
   const [order, setOrder] = useState<OrderType.ReportData>()
   const userInfo = useBearStore(state => state.userInfo)
 
+  //初始化折线图PieCity
+  const [lineRef, lineInstance] = useCharts()
+  const [pieCityRef, pieCityInstance] = useCharts()
+  const [pieAgeRef, pieAgeInstance] = useCharts()
+  const [radarRef, radarInstance] = useCharts()
+
   useEffect(() => {
     getReportData()
   }, [])
+  useEffect(() => {
+    getLineData()
+    getPieCountData()
+    getRadarChart()
+  }, [lineInstance, pieCityInstance, pieAgeInstance, radarInstance])
 
   // 获取统计数据
   const getReportData = async () => {
@@ -64,74 +75,132 @@ export default function Dashboard() {
       children: userInfo.deptName
     }
   ]
-  var chartDom = document.getElementById("chart")
-  var myChart = echarts.init(chartDom)
-  var option
 
-  option = {
-    title: {
-      text: "Stacked Line"
-    },
-    tooltip: {
-      trigger: "axis"
-    },
-    legend: {
-      data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"]
-    },
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
-      containLabel: true
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {}
-      }
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    },
-    yAxis: {
-      type: "value"
-    },
-    series: [
-      {
-        name: "Email",
-        type: "line",
-        stack: "Total",
-        data: [120, 132, 101, 134, 90, 230, 210]
+  //获取折线图数据
+  const getLineData = async () => {
+    if (!lineRef) {
+      return
+    }
+    const data = await api.getLineData()
+    console.log(data)
+    lineInstance?.setOption({
+      tooltip: {
+        trigger: "axis"
       },
-      {
-        name: "Union Ads",
-        type: "line",
-        stack: "Total",
-        data: [220, 182, 191, 234, 290, 330, 310]
+      legend: {
+        data: ["订单", "流水"]
       },
-      {
-        name: "Video Ads",
-        type: "line",
-        stack: "Total",
-        data: [150, 232, 201, 154, 190, 330, 410]
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: data.label
       },
-      {
-        name: "Direct",
-        type: "line",
-        stack: "Total",
-        data: [320, 332, 301, 334, 390, 330, 320]
+      yAxis: {
+        type: "value"
       },
-      {
-        name: "Search Engine",
-        type: "line",
-        stack: "Total",
-        data: [820, 932, 901, 934, 1290, 1330, 1320]
-      }
-    ]
+      series: [
+        {
+          name: "订单",
+          type: "line",
+          stack: "Total",
+          data: data.order
+        },
+        {
+          name: "流水",
+          type: "line",
+          stack: "Total",
+          data: data.money
+        }
+      ]
+    })
   }
 
-  option && myChart.setOption(option)
+  //获取饼图数据
+  const getPieCountData = async () => {
+    if (!pieAgeRef) {
+      return
+    }
+    if (!pieCityRef) {
+      return
+    }
+    const cityData = await api.getPieCityData()
+    const ageData = await api.getPieAgeData()
+    pieCityInstance?.setOption({
+      title: {
+        text: "司机城市分布",
+        left: "center"
+      },
+      tooltip: {
+        trigger: "item"
+      },
+      legend: {
+        orient: "vertical",
+        left: "left"
+      },
+      series: [
+        {
+          type: "pie",
+          radius: "50%",
+          data: cityData
+        }
+      ]
+    })
+    pieAgeInstance?.setOption({
+      title: {
+        text: "司机年龄分布",
+        left: "center"
+      },
+      legend: {
+        orient: "vertical",
+        left: "left"
+      },
+      tooltip: {
+        trigger: "item"
+      },
+      series: [
+        {
+          name: "城市分布",
+          type: "pie",
+          radius: [50, 180],
+          roseType: "area",
+          data: ageData
+        }
+      ]
+    })
+  }
+
+  //获取雷达图数据
+  const getRadarChart = async () => {
+    const data = await api.getRadarData()
+    radarInstance?.setOption({
+      legend: {
+        data: data.data.name
+      },
+      radar: {
+        indicator: data.indicator
+      },
+      series: [
+        {
+          name: "Beijing",
+          type: "radar",
+          data: data.data
+        }
+      ]
+    })
+  }
+
+  //更新数据按钮
+  const handleUpdate = (num: number) => {
+    if (num === 1) {
+      getLineData()
+    }
+    if (num === 2) {
+      getPieCountData()
+    }
+    if (num === 3) {
+      getRadarChart()
+    }
+  }
   return (
     <div className={styles.dashboard_content}>
       <div className={styles.userinfo_header}>
@@ -160,7 +229,45 @@ export default function Dashboard() {
           <div className={styles.card_context}>{formatNum(order?.cityNum)}座</div>
         </div>
       </div>
-      <div id='chart'></div>
+      <div className={styles.chart}>
+        <Card
+          title='订单和流水走势图'
+          extra={
+            <Button type='primary' onClick={() => handleUpdate(1)}>
+              刷新
+            </Button>
+          }
+        >
+          <div ref={lineRef} className={styles.chart_item}></div>
+        </Card>
+      </div>
+      <div className={styles.chart}>
+        <Card
+          title='司机分布'
+          extra={
+            <Button type='primary' onClick={() => handleUpdate(2)}>
+              刷新
+            </Button>
+          }
+        >
+          <div className={styles.pieCharts}>
+            <div ref={pieCityRef} className={styles.chart_item}></div>
+            <div ref={pieAgeRef} className={styles.chart_item}></div>
+          </div>
+        </Card>
+      </div>
+      <div className={styles.chart}>
+        <Card
+          title='模型判断'
+          extra={
+            <Button type='primary' onClick={() => handleUpdate(3)}>
+              刷新
+            </Button>
+          }
+        >
+          <div ref={radarRef} className={styles.chart_item}></div>
+        </Card>
+      </div>
     </div>
   )
 }
