@@ -9,6 +9,7 @@ import NotFound from "@/views/404"
 import Layout from "@/layout"
 import Dashboard from "@/views/dashboard"
 import UserList from "@/views/system/user/UserList"
+import DeptList from "@/views/system/dept"
 
 export const router = [
   {
@@ -32,6 +33,10 @@ export const router = [
       {
         path: "/userList",
         element: <UserList />
+      },
+      {
+        path: "/deptList",
+        element: <DeptList />
       }
     ]
   },

@@ -95,3 +95,34 @@ export namespace User {
     lastLoginTime?: number | string
   }
 }
+
+export namespace Dept {
+  //搜索参数
+  export interface Params {
+    deptName?: string
+  }
+  //返回部门参数
+  export interface DeptItem {
+    id: string
+    createTime: string
+    updateTime: string
+    deptName: string
+    parentId: string
+    userName: string
+    children: DeptItem[]
+  }
+  //删除部门
+  export interface DelParams {
+    id: string
+  }
+  //创建部门
+  export interface CreateParams {
+    deptName: string
+    parentId?: string
+    userName: string
+  }
+  //编辑部门
+  export interface EditParams extends CreateParams {
+    id: string
+  }
+}

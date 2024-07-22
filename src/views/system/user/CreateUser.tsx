@@ -80,12 +80,12 @@ export default function CreateUser(props: ImodalProp) {
       if (action === "create") {
         api.userCreate(datas)
         message.success("操作成功")
-        handleCancel()
       } else {
         api.userEdit(datas)
         message.success("操作成功")
-        handleCancel()
       }
+      handleCancel()
+      props.update()
     }
   }
 

@@ -27,6 +27,11 @@ const items = [
         key: "3",
         label: "用户管理",
         icon: <DesktopOutlined />
+      },
+      {
+        key: "4",
+        label: "部门管理",
+        icon: <DesktopOutlined />
       }
     ]
   }
@@ -44,6 +49,9 @@ export default function SideMenu() {
     }
     if (value.key == 3) {
       navigate("/userlist")
+    }
+    if (value.key == 4) {
+      navigate("/deptlist")
     }
   }
   return (

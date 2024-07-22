@@ -8,7 +8,7 @@ import { useRef, useState } from "react"
 import { IAction } from "@/types/modal"
 import CreateUser from "./CreateUser"
 import { formatDate, stateItem } from "@/utils/index"
-import { modal } from "@/utils/AntdGlobal"
+import { message, modal } from "@/utils/AntdGlobal"
 
 export default function UserList() {
   const [form] = useForm()
@@ -120,16 +120,29 @@ export default function UserList() {
   }
 
   //多选删除接口
-
+  const handleMoreDel = (userId: number[]) => {
+    if (userId.length == 0) return message.warning("请选择需要删除的数据")
+    modal.confirm({
+      title: "删除",
+      content: <span>确认删除该用户吗</span>,
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => {
+        handleUserDelSubmit(userIds)
+      }
+    })
+  }
   //公共删除接口
   const handleUserDelSubmit = async (ids: number[]) => {
     console.log(ids)
     await api.delUser({ userIds: ids })
+    message.success("删除成功")
+    search.submit()
   }
 
   return (
     <div>
-      <SearchButton form={form} submit={search.submit} initialValues={{ state: 0 }}>
+      <SearchButton form={form} submit={search.submit} reset={search.reset} initialValues={{ state: 0 }}>
         <Form.Item label='用户ID' name='Id'>
           <Input placeholder='请输入用户ID' />
         </Form.Item>
@@ -153,7 +166,7 @@ export default function UserList() {
               <Button type='primary' onClick={() => handleCreate(1)}>
                 新增
               </Button>
-              <Button type='default' danger>
+              <Button type='default' danger onClick={() => handleMoreDel(userIds)}>
                 批量删除
               </Button>
             </Space>
