@@ -6,7 +6,7 @@ import styles from "./index.module.less"
 import api from "@/api/userApi"
 import { useEffect, useState } from "react"
 import { OrderType } from "@/types/api"
-import { formatMoney, formatNum } from "@/utils"
+import { formatMoney, formatNum, stateItem } from "@/utils"
 import { useCharts } from "@/hook/useCharts"
 
 export default function Dashboard() {
@@ -32,14 +32,6 @@ export default function Dashboard() {
   const getReportData = async () => {
     const data = await api.getReportData()
     setOrder(data)
-  }
-
-  //状态转换列表
-  const stateItem = (num?: number) => {
-    if (!num) return "-"
-    if (num === 1) return "在职"
-    if (num === 2) return "离职"
-    if (num === 3) return "试用期"
   }
 
   //描述列表

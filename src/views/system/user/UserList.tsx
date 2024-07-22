@@ -4,19 +4,27 @@ import { useForm } from "antd/es/form/Form"
 import { useAntdTable } from "ahooks"
 import api from "@/api/userApi"
 import { User } from "@/types/api"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { IAction } from "@/types/modal"
 import CreateUser from "./CreateUser"
+import { formatDate, stateItem } from "@/utils/index"
+import { modal } from "@/utils/AntdGlobal"
 
 export default function UserList() {
   const [form] = useForm()
+  const [userIds, setUsersIds] = useState<number[]>([])
   const createRef = useRef<{
     open: (type: IAction, data?: User.UserItem) => void
   }>()
+  console.log("userIds", userIds)
 
-  //创建窗口暴露函数
-  const handleCreate = () => {
-    createRef.current?.open("create")
+  //创建|编辑窗口暴露函数
+  const handleCreate = (num: number, data?: User.UserItem) => {
+    if (num === 1) {
+      createRef.current?.open("create")
+    } else {
+      createRef.current?.open("edit", data)
+    }
   }
 
   const getTableData = ({ current, pageSize }: { current: number; pageSize: number }, formData: User.Params) => {
@@ -34,8 +42,9 @@ export default function UserList() {
       })
   }
 
+  //useAntdTable方法Form与Table关联
   const { search, tableProps } = useAntdTable(getTableData, { form, defaultPageSize: 10 })
-  console.log(tableProps)
+
   //Table表头
   const columns = [
     {
@@ -55,27 +64,40 @@ export default function UserList() {
     },
     {
       title: "用户角色",
-      dataIndex: "userEmail",
-      key: "userEmail"
+      dataIndex: "role",
+      key: "role",
+      render: (record: number) => {
+        if (record === 1) return "管理员"
+        if (record === 2) return "体验管理员"
+        if (record === 3) return "普通用户"
+      }
     },
     {
       title: "用户状态",
-      dataIndex: "userEmail",
-      key: "userEmail"
+      dataIndex: "state",
+      key: "state",
+      render: (record: number) => {
+        return stateItem(record)
+      }
     },
     {
       title: "注册时间",
-      dataIndex: "userEmail",
-      key: "userEmail"
+      dataIndex: "createTime",
+      key: "createTime",
+      render: (createTime: string) => {
+        return formatDate(createTime)
+      }
     },
     {
       title: "操作",
       key: "action",
-      render: () => {
+      render: (record: User.UserItem) => {
         return (
           <Space>
-            <Button type='text'>编辑</Button>
-            <Button type='text' danger>
+            <Button type='text' onClick={() => handleCreate(2, record)}>
+              编辑
+            </Button>
+            <Button type='text' danger onClick={() => handleDel(record.userId)}>
               删除
             </Button>
           </Space>
@@ -83,6 +105,28 @@ export default function UserList() {
       }
     }
   ]
+
+  //单个删除接口
+  const handleDel = (userId: number) => {
+    modal.confirm({
+      title: "删除",
+      content: <span>确认删除该用户吗</span>,
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => {
+        handleUserDelSubmit([userId])
+      }
+    })
+  }
+
+  //多选删除接口
+
+  //公共删除接口
+  const handleUserDelSubmit = async (ids: number[]) => {
+    console.log(ids)
+    await api.delUser({ userIds: ids })
+  }
+
   return (
     <div>
       <SearchButton form={form} submit={search.submit} initialValues={{ state: 0 }}>
@@ -106,7 +150,7 @@ export default function UserList() {
           <div>用户名称</div>
           <div>
             <Space>
-              <Button type='primary' onClick={handleCreate}>
+              <Button type='primary' onClick={() => handleCreate(1)}>
                 新增
               </Button>
               <Button type='default' danger>
@@ -115,7 +159,19 @@ export default function UserList() {
             </Space>
           </div>
         </div>
-        <Table rowKey='userName' bordered dataSource={tableProps.dataSource} columns={columns} />
+        <Table
+          rowKey='userId'
+          bordered
+          dataSource={tableProps.dataSource}
+          columns={columns}
+          rowSelection={{
+            type: "checkbox",
+            selectedRowKeys: userIds,
+            onChange: (selectedRowKeys: React.Key[]) => {
+              setUsersIds(selectedRowKeys as number[])
+            }
+          }}
+        />
       </div>
       <CreateUser mRef={createRef} update={search.submit} />
     </div>

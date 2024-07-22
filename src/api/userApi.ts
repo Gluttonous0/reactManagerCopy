@@ -35,6 +35,18 @@ const api = {
   // 获取用户列表
   getUserList(params?: User.Params) {
     return request.get<ResultData<User.UserItem>>("/users/list", params)
+  },
+  // 用户添加
+  userCreate(params: User.CreateParams) {
+    return request.post("/users/create", params)
+  },
+  // 用户编辑
+  userEdit(params: User.CreateParams) {
+    return request.post("/users/edit", params)
+  },
+  //删除用户
+  delUser(params: { userIds: number[] }) {
+    return request.post("/users/delete", params)
   }
 }
 
