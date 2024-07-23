@@ -10,6 +10,7 @@ import Layout from "@/layout"
 import Dashboard from "@/views/dashboard"
 import UserList from "@/views/system/user/UserList"
 import DeptList from "@/views/system/dept"
+import MenuList from "@/views/system/menu"
 
 export const router = [
   {
@@ -37,6 +38,10 @@ export const router = [
       {
         path: "/deptList",
         element: <DeptList />
+      },
+      {
+        path: "/menuList",
+        element: <MenuList />
       }
     ]
   },

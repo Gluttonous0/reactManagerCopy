@@ -6,6 +6,7 @@ import { Button, Form, Input, Space, Table } from "antd"
 import { useForm } from "antd/es/form/Form"
 import { useEffect, useRef, useState } from "react"
 import CreateDept from "./CreateDept"
+import { message, modal } from "@/utils/AntdGlobal"
 
 export default function DeptList() {
   const [deptList, setDeptList] = useState<Dept.DeptItem[]>([]) //储存接口返回的部门列表
@@ -18,16 +19,49 @@ export default function DeptList() {
     getDeptList()
   }, [])
 
-  //创建部门
+  //获取部门列表
+  const getDeptList = async () => {
+    const data = await api.getDeptList(form.getFieldsValue())
+    setDeptList(data)
+  }
+
+  //创建 && 修改部门
   const createDept = (num: number, data?: Dept.EditParams | { parentId: string }) => {
     if (num === 1) {
       deptRef.current?.open("create")
     }
+    if (num === 2) {
+      deptRef.current?.open("create", data)
+    }
+    if (num === 3) {
+      deptRef.current?.open("edit", data)
+    }
   }
 
-  const getDeptList = async () => {
-    const data = await api.getDeptList(form.getFieldsValue())
-    setDeptList(data)
+  //删除功能
+  const handleDel = (id: string) => {
+    modal.confirm({
+      title: "确认删除",
+      content: <span>确认是否删除部门</span>,
+      okText: "确认",
+      cancelText: "取消",
+      onOk: async () => {
+        await api.delDeptById({ id })
+        message.success("删除成功")
+        getDeptList()
+      }
+    })
+  }
+
+  //搜索功能
+  const handleSearch = () => {
+    getDeptList()
+  }
+
+  //重置功能
+  const handleReset = () => {
+    form.resetFields()
+    getDeptList()
   }
 
   //Table表头
@@ -62,12 +96,16 @@ export default function DeptList() {
     {
       title: "操作",
       key: "action",
-      render: () => {
+      render: (record: any) => {
         return (
           <Space>
-            <Button type='text'>新增</Button>
-            <Button type='text'>编辑</Button>
-            <Button type='text' danger>
+            <Button type='text' onClick={() => createDept(2, record.id)}>
+              新增
+            </Button>
+            <Button type='text' onClick={() => createDept(3, record)}>
+              编辑
+            </Button>
+            <Button type='text' danger onClick={() => handleDel(record.id)}>
               删除
             </Button>
           </Space>
@@ -75,17 +113,6 @@ export default function DeptList() {
       }
     }
   ]
-
-  //搜索功能
-  const handleSearch = () => {
-    getDeptList()
-  }
-
-  //重置功能
-  const handleReset = () => {
-    form.resetFields()
-    getDeptList()
-  }
 
   return (
     <div>

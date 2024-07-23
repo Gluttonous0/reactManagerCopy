@@ -32,6 +32,11 @@ const items = [
         key: "4",
         label: "部门管理",
         icon: <DesktopOutlined />
+      },
+      {
+        key: "5",
+        label: "菜单管理",
+        icon: <DesktopOutlined />
       }
     ]
   }
@@ -52,6 +57,9 @@ export default function SideMenu() {
     }
     if (value.key == 4) {
       navigate("/deptlist")
+    }
+    if (value.key == 5) {
+      navigate("/menulist")
     }
   }
   return (

@@ -36,6 +36,12 @@ export default function CreateDept(props: ImodalDeptProp) {
   const open = (type: IAction, data?: Dept.EditParams | { prentId: string }) => {
     setAction(type)
     setVisible(true)
+    if (type === "create" && data) {
+      form.setFieldsValue({ parentId: data })
+    }
+    if (type === "edit" && data) {
+      form.setFieldsValue(data)
+    }
   }
 
   //确认提交
@@ -46,6 +52,12 @@ export default function CreateDept(props: ImodalDeptProp) {
         const newDept = form.getFieldsValue()
         api.createDept(newDept)
         message.success("创建成功")
+        console.log(newDept)
+      }
+      if (action === "edit") {
+        const newDept = form.getFieldsValue()
+        api.editDept(newDept)
+        message.success("修改成功")
         console.log(newDept)
       }
       handleCancel()
