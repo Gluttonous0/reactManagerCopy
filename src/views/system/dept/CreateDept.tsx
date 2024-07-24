@@ -1,11 +1,11 @@
 import api from "@/api/deptApi"
 import { Dept, User } from "@/types/api"
-import { IAction, ImodalDeptProp, ImodalProp } from "@/types/modal"
-import { Form, Input, message, Modal, Select, TreeSelect } from "antd"
+import { IAction, ImodalProp } from "@/types/modal"
+import { Form, Input, message, Modal, TreeSelect } from "antd"
 import { useForm } from "antd/es/form/Form"
 import { useEffect, useImperativeHandle, useState } from "react"
 
-export default function CreateDept(props: ImodalDeptProp) {
+export default function CreateDept(props: ImodalProp<Dept.EditParams>) {
   const [form] = useForm()
   const [visible, setVisible] = useState(false) //开关控制
   const [action, setAction] = useState<IAction>() //窗口新增 | 编辑

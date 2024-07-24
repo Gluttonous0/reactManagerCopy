@@ -149,4 +149,17 @@ export namespace Menu {
     buttons?: MenuItem[]
     children?: MenuItem[]
   }
+  // 搜索参数
+  export interface Params {
+    menuName?: string
+    state?: number
+  }
+  // 修改用户参数
+  export interface EditParams extends CreateParams {
+    id?: string
+  }
+  // 删除参数
+  export interface DelParams {
+    id: string
+  }
 }

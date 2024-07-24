@@ -1,4 +1,4 @@
-import { Login, OrderType, User, ResultData } from "@/types/api"
+import { Login, OrderType, User, ResultData, Menu } from "@/types/api"
 import request from "@/utils/request"
 
 const api = {
@@ -47,6 +47,10 @@ const api = {
   //删除用户
   delUser(params: { userIds: number[] }) {
     return request.post("/users/delete", params)
+  },
+  // 获取用户权限列表
+  getPermissionList() {
+    return request.get<{ buttonList: string[]; menuList: Menu.MenuItem[] }>("/users/getPermissionList")
   }
 }
 
