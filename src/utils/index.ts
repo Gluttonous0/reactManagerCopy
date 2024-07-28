@@ -4,6 +4,8 @@
  * @returns
  */
 
+import { Menu } from "@/types/api"
+
 //格式化金额
 export const formatMoney = (num?: number | string) => {
   if (!num) return 0
@@ -70,4 +72,39 @@ export const formatDate = (date?: Date | string, rule?: string) => {
     fmt = fmt.replace(new RegExp(`${k}`), isLength ? `0${O[k].toString()}` : O[k].toString())
   }
   return fmt
+}
+
+//获取页面路径(使用中)
+export const getMenuPath = (list: Menu.MenuItem[]) => {
+  // debugger
+  const pathList: string[] = []
+  list.forEach((item: Menu.MenuItem) => {
+    if (item.path && item.button) {
+      pathList.push(item.path)
+    }
+    if (item.children && item.children.length > 0) {
+      const newPath = getMenuPath(item.children) || []
+      pathList.push(...newPath)
+    }
+  })
+  return pathList
+}
+
+//获取页面路径
+export const getMenuPath1 = (list: Menu.MenuItem[]): string[] => {
+  return list.reduce((result: string[], item: Menu.MenuItem) => {
+    return result.concat(Array.isArray(item.children) && !item.button ? getMenuPath(item.children) : item.path + "")
+  }, [])
+}
+
+//递归获取路由对象
+export const searchRoute: any = (path: string, routes: any = []) => {
+  for (const item of routes) {
+    if (item.path === path) return item
+    if (item.children) {
+      const result = searchRoute(path, item.children)
+      if (result) return result
+    }
+  }
+  return ""
 }

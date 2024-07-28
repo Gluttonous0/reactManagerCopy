@@ -58,7 +58,6 @@ export default function CreateDept(props: ImodalProp<Dept.EditParams>) {
         const newDept = form.getFieldsValue()
         api.editDept(newDept)
         message.success("修改成功")
-        console.log(newDept)
       }
       handleCancel()
       props.update()

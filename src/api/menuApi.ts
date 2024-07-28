@@ -3,7 +3,7 @@ import request from "@/utils/request"
 
 const api = {
   //获取菜单列表
-  getMenuList(params: Menu.Params) {
+  getMenuList(params?: Menu.Params) {
     return request.get<Menu.MenuItem[]>("/menu/list", params)
   },
   // 创建菜单

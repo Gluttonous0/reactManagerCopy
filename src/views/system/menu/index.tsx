@@ -2,6 +2,7 @@ import api from "@/api/menuApi"
 import SearchButton from "@/components/SearchButton"
 import { Menu } from "@/types/api"
 import { IAction } from "@/types/modal"
+import { message, modal } from "@/utils/AntdGlobal"
 import storage from "@/utils/storage"
 import { Button, Form, Input, Select, Space, Table } from "antd"
 import { useForm } from "antd/es/form/Form"
@@ -23,7 +24,7 @@ export default function MenuList() {
   const getMenuList = async () => {
     const data = await api.getMenuList(form.getFieldsValue())
     setMenuList(getTreeList(data))
-    storage.set("menuLength", data.length)
+    storage.set("menuList", data)
   }
 
   //Table表头
@@ -82,9 +83,13 @@ export default function MenuList() {
       render: (record: any) => {
         return (
           <Space>
-            <Button type='text'>新增</Button>
-            <Button type='text'>编辑</Button>
-            <Button type='text' danger>
+            <Button type='text' onClick={() => handleModal(2, record)}>
+              新增
+            </Button>
+            <Button type='text' onClick={() => handleModal(3, record)}>
+              编辑
+            </Button>
+            <Button type='text' danger onClick={() => handleDel(record.id)}>
               删除
             </Button>
           </Space>
@@ -92,6 +97,21 @@ export default function MenuList() {
       }
     }
   ]
+
+  //删除功能
+  const handleDel = (id: string) => {
+    modal.confirm({
+      title: "确认删除",
+      content: <span>请确认是否删除该菜单?</span>,
+      okText: "确认",
+      cancelText: "取消",
+      onOk: async () => {
+        await api.delMenuById({ id })
+        message.success("删除成功")
+        handleSubmit()
+      }
+    })
+  }
 
   //递归处理函数
   const getTreeList = (list: any) => {
@@ -132,6 +152,12 @@ export default function MenuList() {
   const handleModal = (num: number, data?: Menu.MenuItem) => {
     if (num === 1) {
       menuRef.current?.open("create")
+    }
+    if (num === 2) {
+      menuRef.current?.open("create", data)
+    }
+    if (num === 3) {
+      menuRef.current?.open("edit", data)
     }
   }
 

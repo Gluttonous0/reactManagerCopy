@@ -16,7 +16,6 @@ export default function UserList() {
   const createRef = useRef<{
     open: (type: IAction, data?: User.UserItem) => void
   }>()
-  console.log("userIds", userIds)
 
   //创建|编辑窗口暴露函数
   const handleCreate = (num: number, data?: User.UserItem) => {

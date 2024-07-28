@@ -11,6 +11,9 @@ import Dashboard from "@/views/dashboard"
 import UserList from "@/views/system/user/UserList"
 import DeptList from "@/views/system/dept"
 import MenuList from "@/views/system/menu"
+import RoleList from "@/views/system/role"
+import AuthLoader from "./AuthLoader"
+import OrderList from "@/views/order/orderList"
 
 export const router = [
   {
@@ -21,7 +24,7 @@ export const router = [
   {
     id: "layout",
     element: <Layout />,
-    // loader: AuthLoader,
+    loader: AuthLoader,
     children: [
       {
         path: "/welcome",
@@ -42,6 +45,14 @@ export const router = [
       {
         path: "/menuList",
         element: <MenuList />
+      },
+      {
+        path: "/roleList",
+        element: <RoleList />
+      },
+      {
+        path: "/orderList",
+        element: <OrderList />
       }
     ]
   },
